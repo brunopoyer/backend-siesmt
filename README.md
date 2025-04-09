@@ -12,8 +12,8 @@ Sistema desenvolvido em Laravel para gerenciamento de servidores efetivos e temp
 
 1. Clone o repositório:
 ```bash
-git clone <seu-repositorio>
-cd <seu-repositorio>
+git clone https://github.com/brunopoyer/backend-siesmt.git
+cd backend-siesmt
 ```
 
 2. Copie o arquivo de ambiente:
@@ -58,6 +58,14 @@ O sistema será configurado automaticamente, incluindo:
 ## Uso
 
 A API estará disponível em `http://localhost:8000/api`.
+
+### Configuração do CORS
+
+O sistema está configurado para aceitar requisições de qualquer origem (`*`). Se você precisar restringir para origens específicas, edite o arquivo `app/Http/Middleware/Cors.php`:
+
+```php
+$response->headers->set('Access-Control-Allow-Origin', 'http://localhost:3000');
+```
 
 ### Autenticação
 

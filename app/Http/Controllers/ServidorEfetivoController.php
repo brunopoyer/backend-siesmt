@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ServidorEfetivo;
+use App\Models\Unidade;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;

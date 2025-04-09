@@ -4,88 +4,50 @@ namespace App\Http\Controllers;
 
 use App\Models\Unidade;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class UnidadeController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index()
     {
-        $unidades = Unidade::with(['enderecos.cidade', 'lotacoes.pessoa'])
-            ->paginate($request->per_page ?? 15);
-        return response()->json($unidades);
+        return Unidade::with(['enderecos'])->get();
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
         $validated = $request->validate([
-            'unid_nome' => 'required|string|max:200',
-            'unid_sigla' => 'required|string|max:20',
-            'enderecos' => 'sometimes|array',
-            'enderecos.*.end_tipo_logradouro' => 'required|string|max:30',
-            'enderecos.*.end_logradouro' => 'required|string|max:200',
-            'enderecos.*.end_numero' => 'required|integer',
-            'enderecos.*.end_bairro' => 'required|string|max:100',
-            'enderecos.*.cid_id' => 'required|exists:cidades,cid_id'
+            'nome' => 'required|string|max:200',
+            'sigla' => 'required|string|max:20|unique:unidades',
         ]);
 
-        try {
-            DB::beginTransaction();
-
-            $unidade = Unidade::create([
-                'unid_nome' => $validated['unid_nome'],
-                'unid_sigla' => $validated['unid_sigla']
-            ]);
-
-            if (isset($validated['enderecos'])) {
-                foreach ($validated['enderecos'] as $endereco) {
-                    $unidade->enderecos()->create($endereco);
-                }
-            }
-
-            DB::commit();
-
-            return response()->json(
-                $unidade->load(['enderecos.cidade']),
-                201
-            );
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        return DB::transaction(function () use ($validated) {
+            return Unidade::create($validated);
+        });
     }
 
-    public function show(Unidade $unidade): JsonResponse
+    public function show(Unidade $unidade)
     {
-        return response()->json(
-            $unidade->load(['enderecos.cidade', 'lotacoes.pessoa'])
-        );
+        return $unidade->load(['enderecos']);
     }
 
-    public function update(Request $request, Unidade $unidade): JsonResponse
+    public function update(Request $request, Unidade $unidade)
     {
         $validated = $request->validate([
-            'unid_nome' => 'required|string|max:200',
-            'unid_sigla' => 'required|string|max:20'
+            'nome' => 'sometimes|string|max:200',
+            'sigla' => 'sometimes|string|max:20|unique:unidades,sigla,' . $unidade->id,
         ]);
 
-        $unidade->update($validated);
-        return response()->json($unidade);
+        return DB::transaction(function () use ($unidade, $validated) {
+            $unidade->update($validated);
+            return $unidade->fresh();
+        });
     }
 
-    public function destroy(Unidade $unidade): JsonResponse
+    public function destroy(Unidade $unidade)
     {
-        try {
-            DB::beginTransaction();
-
-            // A exclusão em cascata cuidará das relações
+        return DB::transaction(function () use ($unidade) {
             $unidade->delete();
-
-            DB::commit();
-            return response()->json(null, 204);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+            return response()->noContent();
+        });
     }
 }

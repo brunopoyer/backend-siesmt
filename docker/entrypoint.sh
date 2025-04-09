@@ -21,8 +21,12 @@ composer install
 php artisan key:generate
 php artisan jwt:secret
 
+# Limpa cache
+php artisan config:clear
+php artisan cache:clear
+
 # Executa migrações
-php artisan migrate
+php artisan migrate --force
 
 # Configura o MinIO
 mc alias set myminio http://minio:9000 minioadmin minioadmin

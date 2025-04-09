@@ -2,42 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'email' => 'required|email',
-            'password' => 'required|string',
+            'password' => 'required',
         ]);
 
-        if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Credenciais inválidas'], 401);
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            throw ValidationException::withMessages([
+                'email' => ['As credenciais fornecidas estão incorretas.'],
+            ]);
         }
 
-        return $this->respondWithToken($token);
-    }
+        $user = User::where('email', $request->email)->first();
+        $token = $user->createToken('auth-token')->plainTextToken;
 
-    public function refresh()
-    {
-        try {
-            $token = JWTAuth::parseToken()->refresh();
-            return $this->respondWithToken($token);
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Token inválido ou expirado'], 401);
-        }
-    }
-
-    protected function respondWithToken($token)
-    {
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'token' => $token,
+            'user' => $user
         ]);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message' => 'Logout realizado com sucesso']);
+    }
+
+    public function me(Request $request)
+    {
+        return response()->json($request->user());
     }
 }

@@ -27,6 +27,8 @@ services:
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
     networks:
       - laravel-network
+    depends_on:
+      - app
 
   db:
     image: postgres:17

@@ -12,10 +12,12 @@ use App\Http\Controllers\{
 
 // Rotas públicas
 Route::post('login', [AuthController::class, 'login']);
-Route::post('refresh', [AuthController::class, 'refresh']);
 
 // Rotas protegidas
-Route::middleware(['jwt.auth'])->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('me', [AuthController::class, 'me']);
+
     // Pessoas
     Route::apiResource('pessoas', PessoaController::class);
 

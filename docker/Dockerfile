@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    netcat-traditional
+    netcat-traditional \
+    libpq-dev
 
 # Limpa cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -34,6 +35,9 @@ COPY . .
 # Copia script de inicialização
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Configura PHP-FPM
+RUN echo "listen = 9000" >> /usr/local/etc/php-fpm.d/www.conf
 
 # Define o script de inicialização como entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
