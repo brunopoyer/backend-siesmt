@@ -1,0 +1,466 @@
+{
+	"info": {
+		"_postman_id": "1234567-89ab-cdef-0123-456789abcdef",
+		"name": "API Servidores",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Autenticação",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login"]
+						}
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/refresh",
+							"host": ["{{base_url}}"],
+							"path": ["api", "refresh"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Pessoas",
+			"item": [
+				{
+					"name": "Listar Pessoas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/pessoas",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pessoas"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "15"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Criar Pessoa",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pes_nome\": \"João da Silva\",\n    \"pes_data_nascimento\": \"1990-01-01\",\n    \"pes_sexo\": \"M\",\n    \"pes_mae\": \"Maria da Silva\",\n    \"pes_pai\": \"José da Silva\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pessoas",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pessoas"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Servidores Efetivos",
+			"item": [
+				{
+					"name": "Listar Servidores Efetivos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/servidores-efetivos",
+							"host": ["{{base_url}}"],
+							"path": ["api", "servidores-efetivos"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "15"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Criar Servidor Efetivo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "pes_nome",
+									"value": "João da Silva",
+									"type": "text"
+								},
+								{
+									"key": "pes_data_nascimento",
+									"value": "1990-01-01",
+									"type": "text"
+								},
+								{
+									"key": "pes_sexo",
+									"value": "M",
+									"type": "text"
+								},
+								{
+									"key": "pes_mae",
+									"value": "Maria da Silva",
+									"type": "text"
+								},
+								{
+									"key": "pes_pai",
+									"value": "José da Silva",
+									"type": "text"
+								},
+								{
+									"key": "se_matricula",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "unid_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "foto",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/servidores-efetivos",
+							"host": ["{{base_url}}"],
+							"path": ["api", "servidores-efetivos"]
+						}
+					}
+				},
+				{
+					"name": "Buscar por Unidade",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/servidores-efetivos/unidade/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "servidores-efetivos", "unidade", "1"]
+						}
+					}
+				},
+				{
+					"name": "Buscar por Nome",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/servidores-efetivos/busca?nome=João",
+							"host": ["{{base_url}}"],
+							"path": ["api", "servidores-efetivos", "busca"],
+							"query": [
+								{
+									"key": "nome",
+									"value": "João"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Servidores Temporários",
+			"item": [
+				{
+					"name": "Listar Servidores Temporários",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/servidores-temporarios",
+							"host": ["{{base_url}}"],
+							"path": ["api", "servidores-temporarios"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "15"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Criar Servidor Temporário",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "pes_nome",
+									"value": "Maria Santos",
+									"type": "text"
+								},
+								{
+									"key": "pes_data_nascimento",
+									"value": "1995-01-01",
+									"type": "text"
+								},
+								{
+									"key": "pes_sexo",
+									"value": "F",
+									"type": "text"
+								},
+								{
+									"key": "pes_mae",
+									"value": "Ana Santos",
+									"type": "text"
+								},
+								{
+									"key": "pes_pai",
+									"value": "Pedro Santos",
+									"type": "text"
+								},
+								{
+									"key": "st_data_admissao",
+									"value": "2024-01-01",
+									"type": "text"
+								},
+								{
+									"key": "st_data_demissao",
+									"value": "2024-12-31",
+									"type": "text"
+								},
+								{
+									"key": "unid_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "foto",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/servidores-temporarios",
+							"host": ["{{base_url}}"],
+							"path": ["api", "servidores-temporarios"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Unidades",
+			"item": [
+				{
+					"name": "Listar Unidades",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/unidades",
+							"host": ["{{base_url}}"],
+							"path": ["api", "unidades"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "15"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Criar Unidade",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"unid_nome\": \"Secretaria de Administração\",\n    \"unid_sigla\": \"SECAD\",\n    \"enderecos\": [\n        {\n            \"end_tipo_logradouro\": \"Rua\",\n            \"end_logradouro\": \"Principal\",\n            \"end_numero\": 100,\n            \"end_bairro\": \"Centro\",\n            \"cid_id\": 1\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/unidades",
+							"host": ["{{base_url}}"],
+							"path": ["api", "unidades"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Lotações",
+			"item": [
+				{
+					"name": "Listar Lotações",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/lotacoes",
+							"host": ["{{base_url}}"],
+							"path": ["api", "lotacoes"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "15"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Criar Lotação",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pes_id\": 1,\n    \"unid_id\": 1,\n    \"lot_data_lotacao\": \"2024-01-01\",\n    \"lot_portaria\": \"Portaria 001/2024\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/lotacoes",
+							"host": ["{{base_url}}"],
+							"path": ["api", "lotacoes"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000"
+		},
+		{
+			"key": "token",
+			"value": "seu_token_jwt_aqui"
+		}
+	]
+}
