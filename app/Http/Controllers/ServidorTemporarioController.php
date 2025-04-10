@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Pessoa;
 use App\Models\ServidorTemporario;
 use App\Models\FotoPessoa;
+use App\Models\Endereco;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -35,12 +36,20 @@ class ServidorTemporarioController extends Controller
             'st_data_admissao' => 'required|date',
             'st_data_demissao' => 'nullable|date|after:st_data_admissao',
             'foto' => 'nullable|image|max:5120',
-            'unid_id' => 'required|exists:unidades,unid_id'
+            'unid_id' => 'required|exists:unidades,unid_id',
+            // Campos do endereço
+            'endereco' => 'required|array',
+            'endereco.tipo_logradouro' => 'required|string|max:20',
+            'endereco.logradouro' => 'required|string|max:200',
+            'endereco.numero' => 'required|string|max:10',
+            'endereco.complemento' => 'nullable|string|max:100',
+            'endereco.bairro' => 'required|string|max:100',
+            'endereco.cep' => 'required|string|max:10',
+            'endereco.cidade_id' => 'required|exists:cidades,cid_id',
+            'endereco.tipo' => 'required|in:residencial,comercial,outro'
         ]);
 
-        try {
-            DB::beginTransaction();
-
+        return DB::transaction(function () use ($request, $validated) {
             // Criar pessoa
             $pessoa = Pessoa::create([
                 'pes_nome' => $validated['pes_nome'],
@@ -60,7 +69,24 @@ class ServidorTemporarioController extends Controller
             // Criar lotação
             $pessoa->lotacoes()->create([
                 'unid_id' => $validated['unid_id'],
-                'lot_data_lotacao' => $validated['st_data_admissao']
+                'lot_data_lotacao' => $validated['st_data_admissao'],
+                'lot_status' => 'ativo'
+            ]);
+
+            // Criar endereço
+            $endereco = Endereco::create([
+                'end_tipo_logradouro' => $validated['endereco']['tipo_logradouro'],
+                'end_logradouro' => $validated['endereco']['logradouro'],
+                'end_numero' => $validated['endereco']['numero'],
+                'end_complemento' => $validated['endereco']['complemento'] ?? null,
+                'end_bairro' => $validated['endereco']['bairro'],
+                'end_cep' => $validated['endereco']['cep'],
+                'cid_id' => $validated['endereco']['cidade_id']
+            ]);
+
+            // Associar endereço à pessoa
+            $pessoa->enderecos()->attach($endereco->end_id, [
+                'pend_tipo' => $validated['endereco']['tipo']
             ]);
 
             // Upload da foto se fornecida
@@ -74,16 +100,11 @@ class ServidorTemporarioController extends Controller
                 ]);
             }
 
-            DB::commit();
-
             return response()->json(
-                $servidor->load(['pessoa.fotos', 'pessoa.lotacoes.unidade']),
+                $servidor->load(['pessoa.fotos', 'pessoa.enderecos.cidade', 'pessoa.lotacoes.unidade']),
                 201
             );
-        } catch (\Exception $e) {
-            DB::rollBack();
-            throw $e;
-        }
+        });
     }
 
     public function show(ServidorTemporario $servidorTemporario): JsonResponse

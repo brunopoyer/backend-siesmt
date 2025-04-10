@@ -14,13 +14,19 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libpq-dev \
-    libsodium-dev
+    libsodium-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libwebp-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) gd pdo pdo_pgsql
 
 # Limpar cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Instalar extensões PHP
-RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd sodium
+# Instalar outras extensões PHP
+RUN docker-php-ext-install mbstring exif pcntl bcmath sodium
 
 # Obter último Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer

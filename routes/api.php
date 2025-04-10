@@ -12,6 +12,7 @@ use App\Http\Controllers\{
 
 // Rotas públicas
 Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
 
 // Rotas protegidas
 Route::middleware('auth:sanctum')->group(function () {

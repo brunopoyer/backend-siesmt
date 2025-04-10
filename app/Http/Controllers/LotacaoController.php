@@ -15,18 +15,22 @@ class LotacaoController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'pessoa_id' => 'required|exists:pessoas,id',
-            'unidade_id' => 'required|exists:unidades,id',
+        $request->validate([
+            'pessoa_id' => 'required|exists:pessoas,pes_id',
+            'unidade_id' => 'required|exists:unidades,unid_id',
             'data_inicio' => 'required|date',
-            'data_fim' => 'nullable|date|after:data_inicio',
-            'cargo' => 'required|string|max:100',
-            'status' => 'required|in:ativo,inativo',
+            'cargo' => 'required|string',
+            'status' => 'required|in:ativo,inativo'
         ]);
 
-        return DB::transaction(function () use ($validated) {
-            return Lotacao::create($validated);
-        });
+        $lotacao = new Lotacao();
+        $lotacao->pes_id = $request->pessoa_id;
+        $lotacao->unid_id = $request->unidade_id;
+        $lotacao->lot_data_lotacao = $request->data_inicio;
+        $lotacao->lot_portaria = $request->portaria ?? null;
+        $lotacao->save();
+
+        return response()->json($lotacao, 201);
     }
 
     public function show(Lotacao $lotacao)

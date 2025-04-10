@@ -8,27 +8,20 @@ services:
     container_name: laravel-app
     restart: unless-stopped
     working_dir: /var/www
+    ports:
+      - "8000:8000"
     volumes:
       - ./:/var/www
-    networks:
-      - laravel-network
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
     depends_on:
       - db
       - minio
-
-  nginx:
-    image: nginx:alpine
-    container_name: laravel-nginx
-    restart: unless-stopped
-    ports:
-      - "8000:80"
-    volumes:
-      - ./:/var/www
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d
-    networks:
-      - laravel-network
-    depends_on:
-      - app
+    command: php artisan serve --host=0.0.0.0 --port=8000
 
   db:
     image: postgres:17
@@ -40,8 +33,11 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - dbdata:/var/lib/postgresql/data
-    networks:
-      - laravel-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   minio:
     image: minio/minio
@@ -56,12 +52,6 @@ services:
     volumes:
       - minio_data:/data
     command: server /data --console-address ":9001"
-    networks:
-      - laravel-network
-
-networks:
-  laravel-network:
-    driver: bridge
 
 volumes:
   dbdata:

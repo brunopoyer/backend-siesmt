@@ -1,12 +1,12 @@
 {
 	"info": {
 		"_postman_id": "1234567-89ab-cdef-0123-456789abcdef",
-		"name": "API Servidores",
+		"name": "SIESMT API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Autenticação",
+			"name": "Auth",
 			"item": [
 				{
 					"name": "Login",
@@ -14,13 +14,18 @@
 						"method": "POST",
 						"header": [
 							{
-								"key": "Content-Type",
+								"key": "Accept",
 								"value": "application/json"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"password\"\n}"
+							"raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/api/login",
@@ -30,19 +35,52 @@
 					}
 				},
 				{
-					"name": "Refresh Token",
+					"name": "Registrar",
 					"request": {
 						"method": "POST",
 						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Novo Usuário\",\n    \"email\": \"novo@exemplo.com\",\n    \"password\": \"senha123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "register"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
 							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}"
 							}
 						],
 						"url": {
-							"raw": "{{base_url}}/api/refresh",
+							"raw": "{{base_url}}/api/logout",
 							"host": ["{{base_url}}"],
-							"path": ["api", "refresh"]
+							"path": ["api", "logout"]
 						}
 					}
 				}
@@ -141,6 +179,10 @@
 						"method": "POST",
 						"header": [
 							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}"
 							}
@@ -179,6 +221,11 @@
 									"type": "text"
 								},
 								{
+									"key": "se_data_admissao",
+									"value": "2023-01-01",
+									"type": "text"
+								},
+								{
 									"key": "unid_id",
 									"value": "1",
 									"type": "text"
@@ -187,6 +234,46 @@
 									"key": "foto",
 									"type": "file",
 									"src": []
+								},
+                                {
+									"key": "endereco[tipo_logradouro]",
+									"value": "Rua",
+									"type": "text"
+								},
+								{
+									"key": "endereco[logradouro]",
+									"value": "Rua Exemplo",
+									"type": "text"
+								},
+								{
+									"key": "endereco[numero]",
+									"value": "123",
+									"type": "text"
+								},
+								{
+									"key": "endereco[complemento]",
+									"value": "Apto 101",
+									"type": "text"
+								},
+								{
+									"key": "endereco[bairro]",
+									"value": "Centro",
+									"type": "text"
+								},
+								{
+									"key": "endereco[cep]",
+									"value": "79000-000",
+									"type": "text"
+								},
+								{
+									"key": "endereco[cidade_id]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "endereco[tipo]",
+									"value": "residencial",
+									"type": "text"
 								}
 							]
 						},
@@ -236,6 +323,118 @@
 							]
 						}
 					}
+				},
+				{
+					"name": "Atualizar Servidor Efetivo",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "pes_nome",
+									"value": "Nome Atualizado",
+									"type": "text"
+								},
+								{
+									"key": "pes_data_nascimento",
+									"value": "1990-01-01",
+									"type": "text"
+								},
+								{
+									"key": "pes_sexo",
+									"value": "M",
+									"type": "text"
+								},
+								{
+									"key": "pes_mae",
+									"value": "Mãe Atualizada",
+									"type": "text"
+								},
+								{
+									"key": "pes_pai",
+									"value": "Pai Atualizado",
+									"type": "text"
+								},
+								{
+									"key": "se_matricula",
+									"value": "654321",
+									"type": "text"
+								},
+								{
+									"key": "se_data_admissao",
+									"value": "2023-01-01",
+									"type": "text"
+								},
+								{
+									"key": "foto",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "endereco[end_id]",
+									"value": "1",
+									"type": "text",
+									"description": "ID do endereço existente (opcional)"
+								},
+                                {
+									"key": "endereco[tipo_logradouro]",
+									"value": "Rua",
+									"type": "text"
+								},
+								{
+									"key": "endereco[logradouro]",
+									"value": "Rua Atualizada",
+									"type": "text"
+								},
+								{
+									"key": "endereco[numero]",
+									"value": "456",
+									"type": "text"
+								},
+								{
+									"key": "endereco[complemento]",
+									"value": "Apto 202",
+									"type": "text"
+								},
+								{
+									"key": "endereco[bairro]",
+									"value": "Bairro Novo",
+									"type": "text"
+								},
+								{
+									"key": "endereco[cep]",
+									"value": "79000-000",
+									"type": "text"
+								},
+								{
+									"key": "endereco[cidade_id]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "endereco[tipo]",
+									"value": "residencial",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/servidores-efetivos/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "servidores-efetivos", "1"]
+						}
+					}
 				}
 			]
 		},
@@ -275,6 +474,10 @@
 						"method": "POST",
 						"header": [
 							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
 								"key": "Authorization",
 								"value": "Bearer {{token}}"
 							}
@@ -309,12 +512,12 @@
 								},
 								{
 									"key": "st_data_admissao",
-									"value": "2024-01-01",
+									"value": "2023-01-01",
 									"type": "text"
 								},
 								{
 									"key": "st_data_demissao",
-									"value": "2024-12-31",
+									"value": "2024-01-01",
 									"type": "text"
 								},
 								{
@@ -326,6 +529,46 @@
 									"key": "foto",
 									"type": "file",
 									"src": []
+								},
+                                {
+									"key": "endereco[tipo_logradouro]",
+									"value": "Rua",
+									"type": "text"
+								},
+								{
+									"key": "endereco[logradouro]",
+									"value": "Rua Exemplo",
+									"type": "text"
+								},
+								{
+									"key": "endereco[numero]",
+									"value": "123",
+									"type": "text"
+								},
+								{
+									"key": "endereco[complemento]",
+									"value": "Apto 101",
+									"type": "text"
+								},
+								{
+									"key": "endereco[bairro]",
+									"value": "Centro",
+									"type": "text"
+								},
+								{
+									"key": "endereco[cep]",
+									"value": "79000-000",
+									"type": "text"
+								},
+								{
+									"key": "endereco[cidade_id]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "endereco[tipo]",
+									"value": "residencial",
+									"type": "text"
 								}
 							]
 						},
@@ -333,6 +576,118 @@
 							"raw": "{{base_url}}/api/servidores-temporarios",
 							"host": ["{{base_url}}"],
 							"path": ["api", "servidores-temporarios"]
+						}
+					}
+				},
+				{
+					"name": "Atualizar Servidor Temporário",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "pes_nome",
+									"value": "Nome Atualizado",
+									"type": "text"
+								},
+								{
+									"key": "pes_data_nascimento",
+									"value": "1990-01-01",
+									"type": "text"
+								},
+								{
+									"key": "pes_sexo",
+									"value": "F",
+									"type": "text"
+								},
+								{
+									"key": "pes_mae",
+									"value": "Mãe Atualizada",
+									"type": "text"
+								},
+								{
+									"key": "pes_pai",
+									"value": "Pai Atualizado",
+									"type": "text"
+								},
+								{
+									"key": "st_data_admissao",
+									"value": "2023-01-01",
+									"type": "text"
+								},
+								{
+									"key": "st_data_demissao",
+									"value": "2024-01-01",
+									"type": "text"
+								},
+								{
+									"key": "foto",
+									"type": "file",
+									"src": []
+								},
+                                {
+									"key": "endereco[tipo_logradouro]",
+									"value": "Rua",
+									"type": "text"
+								},
+								{
+									"key": "endereco[end_id]",
+									"value": "1",
+									"type": "text",
+									"description": "ID do endereço existente (opcional)"
+								},
+								{
+									"key": "endereco[logradouro]",
+									"value": "Rua Atualizada",
+									"type": "text"
+								},
+								{
+									"key": "endereco[numero]",
+									"value": "456",
+									"type": "text"
+								},
+								{
+									"key": "endereco[complemento]",
+									"value": "Apto 202",
+									"type": "text"
+								},
+								{
+									"key": "endereco[bairro]",
+									"value": "Bairro Novo",
+									"type": "text"
+								},
+								{
+									"key": "endereco[cep]",
+									"value": "79000-000",
+									"type": "text"
+								},
+								{
+									"key": "endereco[cidade_id]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "endereco[tipo]",
+									"value": "residencial",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/servidores-temporarios/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "servidores-temporarios", "1"]
 						}
 					}
 				}
@@ -392,6 +747,49 @@
 							"path": ["api", "unidades"]
 						}
 					}
+				},
+				{
+					"name": "Atualizar Unidade",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": {
+								"nome": "Nome Atualizado da Unidade",
+								"sigla": "UPD",
+								"telefone": "(67) 99999-9999",
+								"endereco": {
+									"tipo_logradouro": "Rua",
+									"logradouro": "Rua Atualizada",
+									"numero": "456",
+									"complemento": "Sala 202",
+									"bairro": "Centro",
+									"cep": "79000-000",
+									"cidade_id": 1
+								}
+							},
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/unidades/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "unidades", "1"]
+						}
+					}
 				}
 			]
 		},
@@ -447,6 +845,35 @@
 							"raw": "{{base_url}}/api/lotacoes",
 							"host": ["{{base_url}}"],
 							"path": ["api", "lotacoes"]
+						}
+					}
+				},
+				{
+					"name": "Atualizar Lotação",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"pessoa_id\": 1,\n    \"unidade_id\": 1,\n    \"data_inicio\": \"2023-01-01\",\n    \"data_fim\": \"2023-12-31\",\n    \"cargo\": \"Cargo Atualizado\",\n    \"status\": \"ativo\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/lotacoes/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "lotacoes", "1"]
 						}
 					}
 				}
